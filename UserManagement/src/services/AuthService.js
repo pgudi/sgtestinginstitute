@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_API_URL = "http://localhost:9090/api/v1";
+const BASE_API_URL = "https://sgtestinginstitute.onrender.com";
 const TOKEN_KEY = "token";
 
 class AuthService {
