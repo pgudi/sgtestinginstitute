@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_USER_API_URL = "http://localhost:9090/api/v1";
+const BASE_USER_API_URL = "https://sgtestinginstitute.onrender.com/api/v1";
 class UserServices{
    
     registerUser(user){
