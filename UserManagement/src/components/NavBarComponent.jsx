@@ -1,13 +1,13 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AuthService from "../services/AuthService";
 const NavBarComponent = () => {
-
+    const navigate = useNavigate();
     const logoutUser = async (e) => {
             e.preventDefault();
             try {
-             await AuthService.logout();
-             window.location.href = "/login";
+             AuthService.logout();
+             navigate("/login");
         }catch (error) {
         setError("Logout is Not Successfull");
     }
