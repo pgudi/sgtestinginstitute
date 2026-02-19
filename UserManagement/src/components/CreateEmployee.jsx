@@ -15,11 +15,68 @@ const CreateEmployee = () => {
     const [cityName, setCityName] = useState('')
     const [address, setAddress] = useState('')
 
+    const [errors, setErrors] = useState({});
+
     const navigate = useNavigate()
     const { id } = useParams()
 
+    const validate = () => {
+        let tempErrors = {};
+
+        // Required checks + max 15 char validation
+        if (!firstName.trim()) tempErrors.firstName = "First Name should not be blank";
+        else if (firstName.length > 15) tempErrors.firstName = "First Name cannot exceed 15 characters";
+
+        if (!lastName.trim()) tempErrors.lastName = "Last Name should not be blank";
+        else if (lastName.length > 15) tempErrors.lastName = "Last Name cannot exceed 15 characters";
+
+        if (!jobName.trim()) tempErrors.jobName = "Job Name should not be blank";
+        else if (jobName.length > 15) tempErrors.jobName = "Job Name cannot exceed 15 characters";
+
+        if (!departmentName.trim()) tempErrors.departmentName = "Department Name should not be blank";
+        else if (departmentName.length > 15) tempErrors.departmentName = "Department Name cannot exceed 15 characters";
+
+        if (!cityName.trim()) tempErrors.cityName = "City Name should not be blank";
+        else if (cityName.length > 15) tempErrors.cityName = "City Name cannot exceed 15 characters";
+
+        if (!address.trim()) tempErrors.address = "Address should not be blank";
+
+        // Email format validation
+        if (!emailId.trim()) {
+            tempErrors.emailId = "Email ID should not be blank";
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailId)) {
+                tempErrors.emailId = "Invalid Email ID";
+            }
+        }
+
+        // Age validation
+        if (!age.trim()) tempErrors.age = "Age should not be blank";
+        else if (!/^\d+$/.test(age)) tempErrors.age = "Age should be a number";
+        else if (Number(age) < 18 || Number(age) > 60)
+            tempErrors.age = "Age must be between 18 and 60";
+
+        // Contact Number validation
+        if (!contactNumber.trim()) tempErrors.contactNumber = "Contact Number should not be blank";
+        else if (!/^\d+$/.test(contactNumber))
+            tempErrors.contactNumber = "Contact Number must be numeric";
+
+        // Salary validation
+        if (!salary.trim()) tempErrors.salary = "Salary should not be blank";
+        else if (!/^\d+$/.test(salary))
+            tempErrors.salary = "Salary must be numeric";
+
+        setErrors(tempErrors);
+
+        return Object.keys(tempErrors).length === 0;
+    };
+
     const handleSaveAndEditEmployee = (e) => {
         e.preventDefault()
+        if (!validate()) {
+            return;
+        }
         const employee = { firstName, lastName, jobName, emailId, age, contactNumber, salary, departmentName, cityName, address }
         console.log(employee)
         if (id) {
@@ -89,6 +146,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setFirstName(e.target.value)}
                                             ></input>
+                                            {errors.firstName && <p style={{ color: "red" }}>{errors.firstName}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -102,6 +160,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setLastName(e.target.value)}
                                             ></input>
+                                            {errors.lastName && <p style={{ color: "red" }}>{errors.lastName}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -115,6 +174,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setJobName(e.target.value)}
                                             ></input>
+                                            {errors.jobName && <p style={{ color: "red" }}>{errors.jobName}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -128,6 +188,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setEmailId(e.target.value)}
                                             ></input>
+                                            {errors.emailId && <p style={{ color: "red" }}>{errors.emailId}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -141,6 +202,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setAge(e.target.value)}
                                             ></input>
+                                            {errors.age && <p style={{ color: "red" }}>{errors.age}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -154,6 +216,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setContactNumber(e.target.value)}
                                             ></input>
+                                            {errors.contactNumber && <p style={{ color: "red" }}>{errors.contactNumber}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -167,6 +230,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setSalary(e.target.value)}
                                             ></input>
+                                            {errors.salary && <p style={{ color: "red" }}>{errors.salary}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -180,6 +244,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setDepartmentName(e.target.value)}
                                             ></input>
+                                            {errors.departmentName && <p style={{ color: "red" }}>{errors.departmentName}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -193,6 +258,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setCityName(e.target.value)}
                                             ></input>
+                                            {errors.cityName && <p style={{ color: "red" }}>{errors.cityName}</p>}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -206,6 +272,7 @@ const CreateEmployee = () => {
                                                 className='form-control'
                                                 onChange={(e) => setAddress(e.target.value)}
                                             ></input>
+                                            {errors.address && <p style={{ color: "red" }}>{errors.address}</p>}
                                         </div>
                                     </div>
                                     <div className='mt-3'>

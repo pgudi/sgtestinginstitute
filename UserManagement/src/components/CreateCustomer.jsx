@@ -17,7 +17,11 @@ const CreateCustomer = () => {
     const validate = () => {
         let tempErrors = {};
 
-        if (!customerName.trim()) tempErrors.customerName = "Customer Name should not be blank";
+        if (!customerName.trim()) {
+            tempErrors.customerName = "Customer Name should not be blank";
+        } else if (customerName.length > 15) {
+            tempErrors.customerName = "Customer Name cannot exceed 15 characters";
+        }
         if (!emailId.trim()) {
             tempErrors.emailId = "Email ID should not be blank";
         } else {
@@ -26,7 +30,11 @@ const CreateCustomer = () => {
                 tempErrors.emailId = "Invalid Email ID";
             }
         }
-        if (!location.trim()) tempErrors.location = "Location should not be blank";
+        if (!location.trim()) {
+            tempErrors.location = "Location should not be blank";
+        } else if(location.length > 15) {
+            tempErrors.location = "Location cannot exceed 15 characters";
+        }
         if (!customerDescription.trim()) tempErrors.customerDescription = "Description should not be blank";
 
         setErrors(tempErrors);
