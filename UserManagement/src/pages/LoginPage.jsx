@@ -58,7 +58,7 @@ return (
                             </div>
                             <div className="mb-3">
                                 <label className="form-label fw-bold">Password</label>
-                                <input type="text" className="form-control"
+                                <input type="password" className="form-control"
                                     name="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

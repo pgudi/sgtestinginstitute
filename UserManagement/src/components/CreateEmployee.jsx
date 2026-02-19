@@ -200,7 +200,7 @@ const CreateEmployee = () => {
                                         <div>
                                             <input
                                                 type='text'
-                                                placeholder='Enter Salary'
+                                                placeholder='Enter Address'
                                                 value={address}
                                                 name={address}
                                                 className='form-control'

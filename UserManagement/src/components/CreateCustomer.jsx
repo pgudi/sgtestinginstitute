@@ -9,19 +9,44 @@ const CreateCustomer = () => {
     const [location, setLocation] = useState('');
     const [customerDescription, setCustomerDescription] = useState('');
 
+    const [errors, setErrors] = useState({});
+
     const navigate = useNavigate()
     const { id } = useParams()
 
-    const handleSaveAndEditCustomer=(e)=>{
+    const validate = () => {
+        let tempErrors = {};
+
+        if (!customerName.trim()) tempErrors.customerName = "Customer Name should not be blank";
+        if (!emailId.trim()) {
+            tempErrors.emailId = "Email ID should not be blank";
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailId)) {
+                tempErrors.emailId = "Invalid Email ID";
+            }
+        }
+        if (!location.trim()) tempErrors.location = "Location should not be blank";
+        if (!customerDescription.trim()) tempErrors.customerDescription = "Description should not be blank";
+
+        setErrors(tempErrors);
+
+        return Object.keys(tempErrors).length === 0; // returns true if no errors
+    };
+
+    const handleSaveAndEditCustomer = (e) => {
         e.preventDefault()
-        const customer = {customerName, emailId, location, customerDescription}
+        if (!validate()) {
+            return; // stop submitting if validation fails
+        }
+        const customer = { customerName, emailId, location, customerDescription }
         console.log(customer);
-        if(id){
+        if (id) {
             CustomerServices.modifyCustomer(id, customer).then((response) => {
                 console.log(response.data)
                 navigate('/customer')
             })
-        }else{
+        } else {
             CustomerServices.createCustomer(customer).then((response) => {
                 console.log(response.data)
                 navigate('/customer')
@@ -30,7 +55,7 @@ const CreateCustomer = () => {
             })
         }
     }
-    function navigateCustomer(){
+    function navigateCustomer() {
         navigate("/customer")
     }
 
@@ -43,7 +68,7 @@ const CreateCustomer = () => {
         }
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         CustomerServices.getCustomerById(id).then((response) => {
             setCustomerName(response.data.customerName)
             setEmailId(response.data.emailId)
@@ -52,20 +77,20 @@ const CreateCustomer = () => {
         }).catch(error => {
             console.log(error)
         })
-    },[])
-  return (
-    <div>
-        <NavBarComponent />
-        <div className='container p-5'>
-            <div className="row justify-content-evenly">
-                {
-                    showTitle()
-                }
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-body">
-                            <form>
-                                <div className='form-group'>
+    }, [])
+    return (
+        <div>
+            <NavBarComponent />
+            <div className='container p-5'>
+                <div className="row justify-content-evenly">
+                    {
+                        showTitle()
+                    }
+                    <div className="col-md-6">
+                        <div className="card">
+                            <div className="card-body">
+                                <form>
+                                    <div className='form-group'>
                                         <label className='form-label'>Customer Name</label>
                                         <div>
                                             <input
@@ -76,6 +101,9 @@ const CreateCustomer = () => {
                                                 className='form-control'
                                                 onChange={(e) => setCustomerName(e.target.value)}
                                             ></input>
+                                            {errors.customerName && (
+                                                <p style={{ color: "red" }}>{errors.customerName}</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -89,6 +117,9 @@ const CreateCustomer = () => {
                                                 className='form-control'
                                                 onChange={(e) => setEmailId(e.target.value)}
                                             ></input>
+                                            {errors.emailId && (
+                                                <p style={{ color: "red" }}>{errors.emailId}</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -102,6 +133,9 @@ const CreateCustomer = () => {
                                                 className='form-control'
                                                 onChange={(e) => setLocation(e.target.value)}
                                             ></input>
+                                            {errors.location && (
+                                                <p style={{ color: "red" }}>{errors.location}</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className='form-group'>
@@ -115,20 +149,23 @@ const CreateCustomer = () => {
                                                 className='form-control'
                                                 onChange={(e) => setCustomerDescription(e.target.value)}
                                             ></input>
+                                            {errors.customerDescription && (
+                                                <p style={{ color: "red" }}>{errors.customerDescription}</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className='mt-3'>
                                         <button type='submit' className='btn btn-success' onClick={handleSaveAndEditCustomer} >Save</button>
                                         <button className='btn btn-danger ms-2' onClick={navigateCustomer} >Cancel</button>
                                     </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default CreateCustomer
