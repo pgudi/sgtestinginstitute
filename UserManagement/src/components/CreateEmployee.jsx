@@ -61,11 +61,17 @@ const CreateEmployee = () => {
         if (!contactNumber.trim()) tempErrors.contactNumber = "Contact Number should not be blank";
         else if (!/^\d+$/.test(contactNumber))
             tempErrors.contactNumber = "Contact Number must be numeric";
+        else if (contactNumber.length > 10)
+            tempErrors.contactNumber = "Contact Number should not exceed 10 digits";
+
 
         // Salary validation
         if (!salary.trim()) tempErrors.salary = "Salary should not be blank";
         else if (!/^\d+$/.test(salary))
             tempErrors.salary = "Salary must be numeric";
+        else if (parseInt(salary) < 18000 || parseInt(salary) > 100000)
+            tempErrors.salary = "Salary should be between 18000 and 100000";
+
 
         setErrors(tempErrors);
 
