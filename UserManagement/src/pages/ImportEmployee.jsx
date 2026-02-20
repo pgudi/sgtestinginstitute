@@ -5,6 +5,7 @@ import EmployeeServices from '../services/EmployeeServices'
 
 const ImportEmployee = () => {
     const [fileName, setFileName] = useState('')
+    const [error, setError] = useState('');
 
     const navigate = useNavigate()
     function navigateHome() {
@@ -13,6 +14,12 @@ const ImportEmployee = () => {
 
     const handleImportEmployee = (e) => {
         e.preventDefault()
+        if (!fileName) {
+            setError("File Name should not be blank");
+            return;
+        }
+
+        setError("");
         const formData = new FormData();
         formData.append("file", fileName);
 
@@ -63,6 +70,7 @@ const ImportEmployee = () => {
                                                 placeholder='Enter File Path'
                                                 onChange={(e) => setFileName(e.target.files[0])}
                                             ></input>
+                                            {error && <p className="text-danger mt-2">{error}</p>}
                                         </div>
                                     </div>
                                     <p className='mt-3 mb-3'>If you do not have File, Please DownLoad It. <Link onClick={handleDownloadFile}>Down Here</Link></p>
