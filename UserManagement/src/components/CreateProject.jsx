@@ -9,14 +9,43 @@ const CreateProject = () => {
   const [projectDomain, setProjectDomain] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
   const [customers, setCustomers] = useState([]);
+  const [errors, setErrors] = useState({});
   // selected customerId
   const [customerId, setCustomerId] = useState('');
 
   const navigate = useNavigate()
   const { id } = useParams()
 
+  const validateForm = () => {
+    let tempErrors = {};
+
+    // ProjectTitle validations
+    if (!projectTitle.trim())
+      tempErrors.projectTitle = "Project Title should not be blank";
+    else if (projectTitle.length > 15)
+      tempErrors.projectTitle = "Project Title should not exceed 15 characters";
+
+    // ProjectDomain validations
+    if (!projectDomain.trim())
+      tempErrors.projectDomain = "Project Domain should not be blank";
+    else if (projectDomain.length > 15)
+      tempErrors.projectDomain = "Project Domain should not exceed 15 characters";
+
+    // ProjectDescription validations
+    if (!projectDescription.trim())
+      tempErrors.projectDescription = "Project Description should not be blank";
+
+    // CustomerId validations
+    if (!customerId)
+      tempErrors.customerId = "Please select a customer";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleSaveAndEditProject = (e) => {
     e.preventDefault()
+    if (!validateForm()) return;
     const project = {
       projectTitle,
       projectDomain,
@@ -120,6 +149,9 @@ const CreateProject = () => {
                         className='form-control'
                         onChange={(e) => setProjectTitle(e.target.value)}
                       ></input>
+                      {errors.projectTitle && (
+                        <p className="text-danger">{errors.projectTitle}</p>
+                      )}
                     </div>
                   </div>
                   <div className='form-group'>
@@ -133,6 +165,9 @@ const CreateProject = () => {
                         className='form-control'
                         onChange={(e) => setProjectDomain(e.target.value)}
                       ></input>
+                      {errors.projectDomain && (
+                        <p className="text-danger">{errors.projectDomain}</p>
+                      )}
                     </div>
                   </div>
                   <div className='form-group'>
@@ -146,6 +181,9 @@ const CreateProject = () => {
                         className='form-control'
                         onChange={(e) => setProjectDescription(e.target.value)}
                       ></input>
+                      {errors.projectDescription && (
+                        <p className="text-danger">{errors.projectDescription}</p>
+                      )}
                     </div>
                   </div>
                   <div className='form-group'>
@@ -162,6 +200,9 @@ const CreateProject = () => {
                           ))
                         }
                       </select>
+                      {errors.customerId && (
+                        <p className="text-danger">{errors.customerId}</p>
+                      )}
                     </div>
                   </div>
                   <div className='mt-3'>
