@@ -207,7 +207,7 @@ const CreateProject = () => {
                   </div>
                   <div className='mt-3'>
                     <button type='submit' className='btn btn-success' onClick={handleSaveAndEditProject} >Save</button>
-                    <button className='btn btn-danger ms-2' onClick={navigateProject} >Cancel</button>
+                    <button type='button' className='btn btn-danger ms-2' onClick={navigateProject} >Cancel</button>
                   </div>
                 </form>
               </div>

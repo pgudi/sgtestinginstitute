@@ -283,7 +283,7 @@ const CreateEmployee = () => {
                                     </div>
                                     <div className='mt-3'>
                                         <button type='submit' className='btn btn-success' onClick={handleSaveAndEditEmployee} >Save</button>
-                                        <button className='btn btn-danger ms-2' onClick={navigateEmployee} >Cancel</button>
+                                        <button type='button' className='btn btn-danger ms-2' onClick={navigateEmployee} >Cancel</button>
                                     </div>
                                 </form>
                             </div>

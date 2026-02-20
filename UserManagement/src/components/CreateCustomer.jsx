@@ -164,7 +164,7 @@ const CreateCustomer = () => {
                                     </div>
                                     <div className='mt-3'>
                                         <button type='submit' className='btn btn-success' onClick={handleSaveAndEditCustomer} >Save</button>
-                                        <button className='btn btn-danger ms-2' onClick={navigateCustomer} >Cancel</button>
+                                        <button type='button' className='btn btn-danger ms-2' onClick={navigateCustomer} >Cancel</button>
                                     </div>
                                 </form>
                             </div>
