@@ -14,12 +14,41 @@ const CreateTask = () => {
   const [customerId, setCustomerId] = useState('')
   // selected projectId
   const [projectId, setProjectId] = useState('')
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate()
   const { id } = useParams()
 
+  // VALIDATION FUNCTION
+  const validateForm = () => {
+    let tempErrors = {};
+
+    // Task Title validation
+    if (!taskTitle.trim())
+      tempErrors.taskTitle = "Task Title should not be blank";
+    else if (taskTitle.length > 15)
+      tempErrors.taskTitle = "Task Title should not exceed 15 characters";
+
+    // Task Description validation
+    if (!taskDescription.trim())
+      tempErrors.taskDescription = "Task Description should not be blank";
+
+    // Customer validation
+    if (!customerId)
+      tempErrors.customerId = "Please select a customer";
+
+    // Project validation
+    if (!projectId)
+      tempErrors.projectId = "Please select a project";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+
   const handleSaveAndEditTask = (e) => {
     e.preventDefault()
+    if (!validateForm()) return;
     const task = {
       taskTitle,
       taskDescription,
@@ -86,37 +115,37 @@ const CreateTask = () => {
 
   useEffect(() => {
 
-  // Load all customers
-  CustomerServices.getAllCustomers()
-    .then(res => setCustomers(res.data))
-    .catch(err => console.log(err));
+    // Load all customers
+    CustomerServices.getAllCustomers()
+      .then(res => setCustomers(res.data))
+      .catch(err => console.log(err));
 
-  // Load all projects
-  ProjectServices.getAllProjects()
-    .then(res => setProjects(res.data))
-    .catch(err => console.log(err));
+    // Load all projects
+    ProjectServices.getAllProjects()
+      .then(res => setProjects(res.data))
+      .catch(err => console.log(err));
 
-  // If editing, load task details
-  if (id) {
-    TaskServices.getTaskById(id)
-      .then(response => {
-        const taskData = response.data;  // FIXED NAME
+    // If editing, load task details
+    if (id) {
+      TaskServices.getTaskById(id)
+        .then(response => {
+          const taskData = response.data;  // FIXED NAME
 
-        setTaskTitle(taskData.taskTitle);
-        setTaskDescription(taskData.taskDescription);
+          setTaskTitle(taskData.taskTitle);
+          setTaskDescription(taskData.taskDescription);
 
-        if (taskData.customer) {
-          setCustomerId(taskData.customer.customerId);
-        }
+          if (taskData.customer) {
+            setCustomerId(taskData.customer.customerId);
+          }
 
-        if (taskData.project) {
-          setProjectId(taskData.project.projectId);
-        }
-      })
-      .catch(error => console.log(error));
-  }
+          if (taskData.project) {
+            setProjectId(taskData.project.projectId);
+          }
+        })
+        .catch(error => console.log(error));
+    }
 
-}, [id]);
+  }, [id]);
   return (
     <div>
       <NavBarComponent />
@@ -140,6 +169,9 @@ const CreateTask = () => {
                         className='form-control'
                         onChange={(e) => setTaskTitle(e.target.value)}
                       ></input>
+                      {errors.taskTitle && (
+                        <p className="text-danger">{errors.taskTitle}</p>
+                      )}
                     </div>
                   </div>
                   <div className='form-group'>
@@ -153,6 +185,9 @@ const CreateTask = () => {
                         className='form-control'
                         onChange={(e) => setTaskDescription(e.target.value)}
                       ></input>
+                      {errors.taskDescription && (
+                        <p className="text-danger">{errors.taskDescription}</p>
+                      )}
                     </div>
                   </div>
                   <div className='form-group'>
@@ -169,6 +204,9 @@ const CreateTask = () => {
                           ))
                         }
                       </select>
+                      {errors.customerId && (
+                        <p className="text-danger">{errors.customerId}</p>
+                      )}
                     </div>
                   </div>
 
@@ -186,9 +224,12 @@ const CreateTask = () => {
                           ))
                         }
                       </select>
+                      {errors.projectId && (
+                        <p className="text-danger">{errors.projectId}</p>
+                      )}
                     </div>
                   </div>
-                  
+
                   <div className='mt-3'>
                     <button type='submit' className='btn btn-success' onClick={handleSaveAndEditTask} >Save</button>
                     <button className='btn btn-danger ms-2' onClick={navigateTask} >Cancel</button>
