@@ -76,7 +76,7 @@ const ImportEmployee = () => {
                                     <p className='mt-3 mb-3'>If you do not have File, Please DownLoad It. <Link onClick={handleDownloadFile}>Down Here</Link></p>
                                     <div className='mt-3 text-center'>
                                         <button type='submit' className='btn btn-success' onClick={handleImportEmployee} >Import</button>
-                                        <button className='btn btn-danger ms-2' onClick={navigateHome} >Cancel</button>
+                                        <button type='button' className='btn btn-danger ms-2' onClick={navigateHome} >Cancel</button>
                                     </div>
                                 </form>
                             </div>
