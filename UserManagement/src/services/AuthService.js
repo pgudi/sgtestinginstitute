@@ -9,7 +9,7 @@ class AuthService {
     const response = await axios.post(
       `${BASE_API_URL}/authenticate`,
       { username, password },{
-        responseType: "text"
+        responseType: "text",
       }
      
     );
