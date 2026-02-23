@@ -86,37 +86,27 @@ const CreateEmployee = () => {
         const employee = { firstName, lastName, jobName, emailId, age, contactNumber, salary, departmentName, cityName, address }
         console.log(employee)
         if (id) {
-            EmployeeServices.modifyEmployee(id, employee).then((response) => {
-                console.log(response.data)
-                navigate('/employee')
-            }).catch(error => {
-                console.log("UPDATE ERROR:", error);
-
-                if (error.response?.status === 409) {
-                    const backendMessage = error.response.data?.message || "";
-
-                    if (backendMessage.includes("email"))
-                        setErrors({ emailId: "Email ID already exists" });
-                    else if (backendMessage.includes("contact"))
-                        setErrors({ contactNumber: "Contact Number already exists" });
-                }
-            });
+            // UPDATE
+            EmployeeServices.modifyEmployee(id, employee)
+                .then(() => navigate('/employee'))
+                .catch(error => {
+                    if (error.response?.status === 409) {
+                        const msg = error.response.data?.message || "";
+                        if (msg.includes("email")) setErrors({ emailId: "Email ID already exists" });
+                        else if (msg.includes("contact")) setErrors({ contactNumber: "Contact Number already exists" });
+                    }
+                });
         } else {
-            EmployeeServices.createEmployee(employee).then((response) => {
-                console.log(response.data)
-                navigate('/employee')
-            }).catch(error => {
-                console.log("CREATE ERROR:", error);
-
-                if (error.response?.status === 409) {
-                    const backendMessage = error.response.data?.message || "";
-
-                    if (backendMessage.includes("email"))
-                        setErrors({ emailId: "Email ID already exists" });
-                    else if (backendMessage.includes("contact"))
-                        setErrors({ contactNumber: "Contact Number already exists" });
-                }
-            })
+            // CREATE
+            EmployeeServices.createEmployee(employee)
+                .then(() => navigate('/employee'))
+                .catch(error => {
+                    if (error.response?.status === 409) {
+                        const msg = error.response.data?.message || "";
+                        if (msg.includes("email")) setErrors({ emailId: "Email ID already exists" });
+                        else if (msg.includes("contact")) setErrors({ contactNumber: "Contact Number already exists" });
+                    }
+                });
         }
     }
 
@@ -132,22 +122,26 @@ const CreateEmployee = () => {
         }
     }
 
+    // ---------------------- FETCH EMPLOYEE ONLY IF EDIT MODE ----------------------
     useEffect(() => {
-        EmployeeServices.getEmployeeById(id).then((response) => {
-            setFirstName(response.data.firstName)
-            setLastName(response.data.lastName)
-            setJobName(response.data.jobName)
-            setEmailId(response.data.emailId)
-            setAge(response.data.age)
-            setContactNumber(response.data.contactNumber)
-            setSalary(response.data.salary)
-            setDepartmentName(response.data.departmentName)
-            setCityName(response.data.cityName)
-            setAddress(response.data.address)
-        }).catch(error => {
-            console.log(error)
-        })
-    }, [id])
+        if (id) {
+            EmployeeServices.getEmployeeById(id)
+                .then((response) => {
+                    const emp = response.data;
+                    setFirstName(emp.firstName);
+                    setLastName(emp.lastName);
+                    setJobName(emp.jobName);
+                    setEmailId(emp.emailId);
+                    setAge(emp.age);
+                    setContactNumber(emp.contactNumber);
+                    setSalary(emp.salary);
+                    setDepartmentName(emp.departmentName);
+                    setCityName(emp.cityName);
+                    setAddress(emp.address);
+                })
+                .catch(() => { });
+        }
+    }, [id]);
 
     return (
         <div>
