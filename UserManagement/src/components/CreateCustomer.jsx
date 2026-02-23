@@ -53,6 +53,15 @@ const CreateCustomer = () => {
             CustomerServices.modifyCustomer(id, customer).then((response) => {
                 console.log(response.data)
                 navigate('/customer')
+            }).catch(error => {
+                if (error.response && error.response.status === 409) {
+                    setErrors(prev => ({
+                        ...prev,
+                        emailId: "Email ID already exists"
+                    }));
+                } else {
+                    console.log(error);
+                }
             })
         } else {
             CustomerServices.createCustomer(customer).then((response) => {
@@ -82,17 +91,6 @@ const CreateCustomer = () => {
             return <h3 className='text-center'>Add Customer</h3>
         }
     }
-
-    // useEffect(() => {
-    //     CustomerServices.getCustomerById(id).then((response) => {
-    //         setCustomerName(response.data.customerName)
-    //         setEmailId(response.data.emailId)
-    //         setLocation(response.data.location)
-    //         setCustomerDescription(response.data.customerDescription)
-    //     }).catch(error => {
-    //         console.log(error)
-    //     })
-    // }, [])
 
     useEffect(() => {
         if (id) {

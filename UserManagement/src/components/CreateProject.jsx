@@ -60,13 +60,30 @@ const CreateProject = () => {
       ProjectServices.modifyProject(id, project).then((response) => {
         console.log(response.data)
         navigate('/project')
-      })
+      }).catch(error => {
+        if (error.response && error.response.status === 409) {
+          setErrors(prev => ({
+            ...prev,
+            projectTitle: "Project Title already exists"
+          }));
+        } else {
+          console.log(error);
+        }
+      });
     } else {
       ProjectServices.createProject(project).then((response) => {
         console.log(response.data)
         navigate('/project')
       }).catch(error => {
         console.log(error)
+        if (error.response && error.response.status === 409) {
+          setErrors(prev => ({
+            ...prev,
+            projectTitle: "Project Title already exists"
+          }));
+        } else {
+          console.log(error);
+        }
       })
     }
   }
