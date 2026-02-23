@@ -89,13 +89,33 @@ const CreateEmployee = () => {
             EmployeeServices.modifyEmployee(id, employee).then((response) => {
                 console.log(response.data)
                 navigate('/employee')
-            })
+            }).catch(error => {
+            console.log("UPDATE ERROR:", error);
+
+            if (error.response?.status === 409) {
+                const backendMessage = error.response.data?.message || "";
+
+                if (backendMessage.includes("email"))
+                    setErrors({ emailId: "Email ID already exists" });
+                else if (backendMessage.includes("contact"))
+                    setErrors({ contactNumber: "Contact Number already exists" });
+            }
+        });
         } else {
             EmployeeServices.createEmployee(employee).then((response) => {
                 console.log(response.data)
                 navigate('/employee')
             }).catch(error => {
-                console.log(error)
+                console.log("CREATE ERROR:", error);
+
+                if (error.response?.status === 409) {
+                    const backendMessage = error.response.data?.message || "";
+
+                    if (backendMessage.includes("email"))
+                        setErrors({ emailId: "Email ID already exists" });
+                    else if (backendMessage.includes("contact"))
+                        setErrors({ contactNumber: "Contact Number already exists" });
+                }
             })
         }
     }
