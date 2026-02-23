@@ -14,7 +14,12 @@ class ProjectService{
     }
 
     modifyProject(id, project) {
-        return axiosInstance.put(`/projects/${id}`, project)
+        return axiosInstance.put(`/projects/${id}`, project, {
+            headers: {
+                ...axiosInstance.defaults.headers.common,
+                "Content-Type": "application/json"
+            }
+        });
     }
 
     deleteProject(id) {
