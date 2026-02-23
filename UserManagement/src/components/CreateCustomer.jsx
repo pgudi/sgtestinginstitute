@@ -32,7 +32,7 @@ const CreateCustomer = () => {
         }
         if (!location.trim()) {
             tempErrors.location = "Location should not be blank";
-        } else if(location.length > 15) {
+        } else if (location.length > 15) {
             tempErrors.location = "Location cannot exceed 15 characters";
         }
         if (!customerDescription.trim()) tempErrors.customerDescription = "Description should not be blank";
@@ -60,13 +60,13 @@ const CreateCustomer = () => {
                 navigate('/customer')
             }).catch(error => {
                 if (error.response && error.response.status === 409) {
-                        setErrors(prev => ({
-                            ...prev,
-                            emailId: "Email ID already exists"
-                        }));
-                    } else {
-                        console.log(error);
-                    }
+                    setErrors(prev => ({
+                        ...prev,
+                        emailId: "Email ID already exists"
+                    }));
+                } else {
+                    console.log(error);
+                }
             })
         }
     }
@@ -83,16 +83,29 @@ const CreateCustomer = () => {
         }
     }
 
+    // useEffect(() => {
+    //     CustomerServices.getCustomerById(id).then((response) => {
+    //         setCustomerName(response.data.customerName)
+    //         setEmailId(response.data.emailId)
+    //         setLocation(response.data.location)
+    //         setCustomerDescription(response.data.customerDescription)
+    //     }).catch(error => {
+    //         console.log(error)
+    //     })
+    // }, [])
+
     useEffect(() => {
-        CustomerServices.getCustomerById(id).then((response) => {
-            setCustomerName(response.data.customerName)
-            setEmailId(response.data.emailId)
-            setLocation(response.data.location)
-            setCustomerDescription(response.data.customerDescription)
-        }).catch(error => {
-            console.log(error)
-        })
-    }, [])
+        if (id) {
+            CustomerServices.getCustomerById(id)
+                .then((response) => {
+                    setCustomerName(response.data.customerName)
+                    setEmailId(response.data.emailId)
+                    setLocation(response.data.location)
+                    setCustomerDescription(response.data.customerDescription)
+                })
+                .catch(error => console.log(error));
+        }
+    }, [id]);
     return (
         <div>
             <NavBarComponent />
