@@ -59,7 +59,14 @@ const CreateCustomer = () => {
                 console.log(response.data)
                 navigate('/customer')
             }).catch(error => {
-                console.log(error)
+                if (error.response && error.response.status === 409) {
+                        setErrors(prev => ({
+                            ...prev,
+                            emailId: "Email ID already exists"
+                        }));
+                    } else {
+                        console.log(error);
+                    }
             })
         }
     }
