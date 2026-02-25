@@ -47,7 +47,7 @@ const CreateEmployee = () => {
         } else {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailId)) {
-                tempErrors.emailId = "Invalid Email ID";
+                tempErrors.emailId = "Invalid Email ID Format";
             }
         }
 
@@ -90,23 +90,37 @@ const CreateEmployee = () => {
             EmployeeServices.modifyEmployee(id, employee)
                 .then(() => navigate('/employee'))
                 .catch(error => {
-                    if (error.response?.status === 409) {
-                        const msg = error.response.data?.message || "";
-                        if (msg.includes("email")) setErrors({ emailId: "Email ID already exists" });
-                        else if (msg.includes("contact")) setErrors({ contactNumber: "Contact Number already exists" });
-                    }
-                });
+                if (error.response?.status === 409) {
+                    const msg = (error.response.data?.message || "").toLowerCase();
+                    let duplicateErr = {};
+
+                    if (msg.includes("email"))
+                        duplicateErr.emailId = "Email ID already exists";
+
+                    if (msg.includes("contact"))
+                        duplicateErr.contactNumber = "Contact Number already exists";
+
+                    setErrors(prev => ({ ...prev, ...duplicateErr }));
+                }
+            });
         } else {
             // CREATE
             EmployeeServices.createEmployee(employee)
                 .then(() => navigate('/employee'))
                 .catch(error => {
-                    if (error.response?.status === 409) {
-                        const msg = error.response.data?.message || "";
-                        if (msg.includes("email")) setErrors({ emailId: "Email ID already exists" });
-                        else if (msg.includes("contact")) setErrors({ contactNumber: "Contact Number already exists" });
-                    }
-                });
+                if (error.response?.status === 409) {
+                    const msg = (error.response.data?.message || "").toLowerCase();
+                    let duplicateErr = {};
+
+                    if (msg.includes("email"))
+                        duplicateErr.emailId = "Email ID already exists";
+
+                    if (msg.includes("contact"))
+                        duplicateErr.contactNumber = "Contact Number already exists";
+
+                    setErrors(prev => ({ ...prev, ...duplicateErr }));
+                }
+            });
         }
     }
 
