@@ -23,6 +23,10 @@ const CreateEmployee = () => {
     const validate = () => {
         let tempErrors = {};
 
+        // SAFELY convert to string (Prevents trim() crash)
+        const safeEmail = String(emailId || "");
+        const safeContact = String(contactNumber || "");
+
         // Required checks + max 15 char validation
         if (!firstName.trim()) tempErrors.firstName = "First Name should not be blank";
         else if (firstName.length > 15) tempErrors.firstName = "First Name cannot exceed 15 characters";
@@ -42,7 +46,7 @@ const CreateEmployee = () => {
         if (!address.trim()) tempErrors.address = "Address should not be blank";
 
         // Email format validation
-        if (!emailId.trim()) {
+        if (!safeEmail.trim()) {
             tempErrors.emailId = "Email ID should not be blank";
         } else {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,7 +62,7 @@ const CreateEmployee = () => {
             tempErrors.age = "Age must be between 18 and 60";
 
         // Contact Number validation
-        if (!contactNumber.trim()) tempErrors.contactNumber = "Contact Number should not be blank";
+        if (!safeContact.trim()) tempErrors.contactNumber = "Contact Number should not be blank";
         else if (!/^\d+$/.test(contactNumber))
             tempErrors.contactNumber = "Contact Number must be numeric";
         else if (contactNumber.length > 10)
