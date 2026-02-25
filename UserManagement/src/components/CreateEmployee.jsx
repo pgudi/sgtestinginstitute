@@ -26,6 +26,8 @@ const CreateEmployee = () => {
         // SAFELY convert to string (Prevents trim() crash)
         const safeEmail = String(emailId || "");
         const safeContact = String(contactNumber || "");
+        const safeAge = String(age || "");
+        const safeSalary = String(salary || "");
 
         // Required checks + max 15 char validation
         if (!firstName.trim()) tempErrors.firstName = "First Name should not be blank";
@@ -56,7 +58,7 @@ const CreateEmployee = () => {
         }
 
         // Age validation
-        if (!age.trim()) tempErrors.age = "Age should not be blank";
+        if (!safeAge.trim()) tempErrors.age = "Age should not be blank";
         else if (!/^\d+$/.test(age)) tempErrors.age = "Age should be a number";
         else if (Number(age) < 18 || Number(age) > 60)
             tempErrors.age = "Age must be between 18 and 60";
@@ -70,7 +72,7 @@ const CreateEmployee = () => {
 
 
         // Salary validation
-        if (!salary.trim()) tempErrors.salary = "Salary should not be blank";
+        if (!safeSalary.trim()) tempErrors.salary = "Salary should not be blank";
         else if (!/^\d+$/.test(salary))
             tempErrors.salary = "Salary must be numeric";
         else if (parseInt(salary) < 18000 || parseInt(salary) > 100000)
@@ -146,16 +148,16 @@ const CreateEmployee = () => {
             EmployeeServices.getEmployeeById(id)
                 .then((response) => {
                     const emp = response.data;
-                    setFirstName(emp.firstName);
-                    setLastName(emp.lastName);
-                    setJobName(emp.jobName);
-                    setEmailId(emp.emailId);
-                    setAge(emp.age);
-                    setContactNumber(emp.contactNumber);
-                    setSalary(emp.salary);
-                    setDepartmentName(emp.departmentName);
-                    setCityName(emp.cityName);
-                    setAddress(emp.address);
+                    setFirstName(emp.firstName || "");
+                    setLastName(emp.lastName || "");
+                    setJobName(emp.jobName || "");
+                    setEmailId(emp.emailId || "");
+                    setAge(emp.age ? String(emp.age) : "");
+                    setContactNumber(emp.contactNumber ? String(emp.contactNumber) : "");
+                    setSalary(emp.salary ? String(emp.salary) : "");
+                    setDepartmentName(emp.departmentName || "");
+                    setCityName(emp.cityName || "");
+                    setAddress(emp.address || "");
                 })
                 .catch(() => { });
         }
