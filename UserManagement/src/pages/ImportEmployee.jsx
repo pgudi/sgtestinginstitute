@@ -6,30 +6,41 @@ import EmployeeServices from '../services/EmployeeServices'
 const ImportEmployee = () => {
     const [fileName, setFileName] = useState('')
     const [error, setError] = useState('');
+    const [uploading, setUploading] = useState(false);
 
     const navigate = useNavigate()
     function navigateHome() {
         navigate("/home")
     }
 
-    const handleImportEmployee = (e) => {
+    const handleImportEmployee = async(e) => {
         e.preventDefault()
         if (!fileName) {
-            setError("File Name should not be blank");
+            setError("Please select a file to upload.");
             return;
         }
 
         setError("");
+        setUploading(true);
+
         const formData = new FormData();
         formData.append("file", fileName);
 
-        EmployeeServices.importEmployeeFile(formData)
-            .then((response) => {
-                console.log("Upload success:", response.data);
-                navigate("/employee")
-            }).catch(error => {
-                console.log(error)
-            })
+        try {
+            const response = await EmployeeServices.importEmployeeFile(formData);
+            console.log("Upload success:", response.data);
+            navigate("/employee");
+        } catch (err) {
+            console.error(err);
+
+            if (err.response && err.response.data) {
+                setError(err.response.data.message || "Upload failed");
+            } else {
+                setError("Something went wrong. Please try again.");
+            }
+        } finally {
+            setUploading(false);
+        }
     }
 
     const handleDownloadFile = (e) => {
