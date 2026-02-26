@@ -74,16 +74,22 @@ const ImportEmployee = () => {
     const validateCsvHasRecords = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
+
             reader.onload = (e) => {
                 const text = e.target.result;
-                const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
+
+                const rows = text
+                    .split(/\r?\n/)           // split lines
+                    .map(r => r.trim())
+                    .filter(r => r !== "");  // remove empty lines
 
                 if (rows.length <= 1) {
-                    reject("File does not have records or file is blank");
+                    reject("File is blank or does not contain any records");
                 } else {
                     resolve(true);
                 }
             };
+
             reader.readAsText(file);
         });
     };
@@ -104,35 +110,9 @@ const ImportEmployee = () => {
                                         <label className="form-label">Please Browse The File Name</label>
                                         <input
                                             type="file"
+                                            className="form-control"
                                             onChange={(e) => setFileName(e.target.files[0])}
                                         />
-
-                                        {/* Display Validation Table */}
-                                        {errorList.length > 0 && (
-                                            <div className="mt-4">
-                                                <h6 className="text-danger">Validation Errors</h6>
-                                                <table className="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Row</th>
-                                                            <th>Errors</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {errorList.map((err, index) => (
-                                                            <tr key={index}>
-                                                                <td>{err.rowNumber}</td>
-                                                                <td>
-                                                                    {err.errors.map((e, i) => (
-                                                                        <div key={i}>• {e}</div>
-                                                                    ))}
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        )}
                                     </div>
 
                                     <p className="mt-3 mb-3">
@@ -158,26 +138,29 @@ const ImportEmployee = () => {
                                         </button>
                                     </div>
                                 </form>
-                                {/* ⭐ Consolidated validation error table */}
+                                {/* ------------------------------------------------------------
+                                      CONSOLIDATED VALIDATION ERROR TABLE (ROW-WISE)
+                                   ------------------------------------------------------------ */}
                                 {errorList.length > 0 && (
                                     <div className="mt-4">
                                         <h5 className="text-danger">Validation Errors</h5>
 
-                                        <table className='table table-bordered mt-2'>
+                                        <table className="table table-bordered mt-2">
                                             <thead>
                                                 <tr>
-                                                    <th style={{ width: "120px" }}>Row Number</th>
+                                                    <th style={{ width: "150px" }}>Row Number</th>
                                                     <th>Errors</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
-                                                {errorList.map((err, idx) => (
-                                                    <tr key={idx}>
+                                                {errorList.map((err, index) => (
+                                                    <tr key={index}>
                                                         <td>{err.rowNumber}</td>
                                                         <td>
                                                             <ul className="mb-0">
-                                                                {err.errors.map((msg, i) => (
-                                                                    <li key={i} className="text-danger">{msg}</li>
+                                                                {err.errors.map((e, i) => (
+                                                                    <li key={i} className="text-danger">{e}</li>
                                                                 ))}
                                                             </ul>
                                                         </td>
@@ -187,6 +170,7 @@ const ImportEmployee = () => {
                                         </table>
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     </div>
