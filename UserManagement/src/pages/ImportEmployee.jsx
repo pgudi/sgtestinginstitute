@@ -22,6 +22,13 @@ const ImportEmployee = () => {
             return;
         }
 
+        // NEW CSV EMPTY VALIDATION
+        try {
+            await validateCsvHasRecords(fileName);
+        } catch (msg) {
+            setErrorList([{ rowNumber: "-", errors: [msg] }]);
+            return;
+        }
         setUploading(true);
 
         const formData = new FormData();
@@ -34,8 +41,8 @@ const ImportEmployee = () => {
             navigate("/employee");
 
         } catch (err) {
-            if (err.response && Array.isArray(err.response.data)) {
-                // Backend returned row validation errors
+            console.error(err);
+            if (Array.isArray(err.response?.data)) {
                 setErrorList(err.response.data);
             } else if (err.response?.data?.message) {
                 setErrorList([{ rowNumber: "-", errors: [err.response.data.message] }]);
@@ -62,6 +69,23 @@ const ImportEmployee = () => {
                 window.URL.revokeObjectURL(url);
             })
             .catch(console.log);
+    };
+
+    const validateCsvHasRecords = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
+
+                if (rows.length <= 1) {
+                    reject("File does not have records or file is blank");
+                } else {
+                    resolve(true);
+                }
+            };
+            reader.readAsText(file);
+        });
     };
 
     return (
@@ -134,6 +158,35 @@ const ImportEmployee = () => {
                                         </button>
                                     </div>
                                 </form>
+                                {/* ⭐ Consolidated validation error table */}
+                                {errorList.length > 0 && (
+                                    <div className="mt-4">
+                                        <h5 className="text-danger">Validation Errors</h5>
+
+                                        <table className='table table-bordered mt-2'>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: "120px" }}>Row Number</th>
+                                                    <th>Errors</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {errorList.map((err, idx) => (
+                                                    <tr key={idx}>
+                                                        <td>{err.rowNumber}</td>
+                                                        <td>
+                                                            <ul className="mb-0">
+                                                                {err.errors.map((msg, i) => (
+                                                                    <li key={i} className="text-danger">{msg}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
