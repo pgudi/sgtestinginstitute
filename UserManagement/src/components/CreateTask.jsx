@@ -41,6 +41,22 @@ const CreateTask = () => {
     if (!projectId)
       tempErrors.projectId = "Please select a project";
 
+    // Validate Customer–Project Association
+    if (customerId && projectId) {
+      const selectedProject = projects.find(
+        p => Number(p.projectId) === Number(projectId)
+      );
+
+      if (
+        selectedProject &&
+        selectedProject.customer &&
+        Number(selectedProject.customer.customerId) !== Number(customerId)
+      ) {
+        tempErrors.projectCustomer =
+          "Selected customer is not associated with selected project";
+      }
+    }
+
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -226,6 +242,11 @@ const CreateTask = () => {
                       </select>
                       {errors.projectId && (
                         <p className="text-danger">{errors.projectId}</p>
+                      )}
+
+
+                      {errors.projectCustomer && (
+                        <p className="text-danger">{errors.projectCustomer}</p>
                       )}
                     </div>
                   </div>
